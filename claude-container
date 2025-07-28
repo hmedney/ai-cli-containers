@@ -1,6 +1,8 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve the script's path, handling symlinks
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
 DOCKERFILE=claude-container.Dockerfile
 IMAGE_NAME=claude-container
 PROJECT_DIR=/home/hmedney/dev
@@ -9,7 +11,7 @@ CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 CURRENT_USER=$(whoami)
 
-docker build -f ${SCRIPT_DIR}/${DOCKERFILE} -t ${IMAGE_NAME} ${SCRIPT_DIR}
+docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
 docker run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PROJECT_DIR}:${PROJECT_DIR}"  \
