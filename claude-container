@@ -1,10 +1,10 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOCKERFILE=claude.Dockerfile
-IMAGE_NAME=local-claude-code
+DOCKERFILE=claude-container.Dockerfile
+IMAGE_NAME=claude-container
 PROJECT_DIR=/home/hmedney/dev
-DATA_DIR=/home/hmedney/ai-cli/claude
+DATA_DIR="${HOME}/ai-cli/claude"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 CURRENT_USER=$(whoami)
