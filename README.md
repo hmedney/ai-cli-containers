@@ -18,7 +18,7 @@ One-time setup
 
 ```sh
 cd local_clone_of_this_repo
-sudo ln -s claude-container /usr/local/bin/claude-container
+sudo ln -s $PWD/claude-container /usr/local/bin/claude-container
 ```
 
 Start Claude Code
