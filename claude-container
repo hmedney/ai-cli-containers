@@ -5,10 +5,9 @@ SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
 DOCKERFILE=claude-container.Dockerfile
 IMAGE_NAME=claude-container
-DATA_DIR="${HOME}/ai-cli/claude"
+DATA_DIR="${HOME}/claude-container"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
-CURRENT_USER=$(whoami)
 
 mkdir -p "${DATA_DIR}"
 docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
