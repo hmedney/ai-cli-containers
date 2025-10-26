@@ -1,6 +1,8 @@
 # Claude Code wrapper
 
-Convenience script to run Claude Code in a Docker container that only gives Claude Code access to the current directory. Intent is to ensure Claude Code is unable to access host resources outside the current directory.
+Convenience script to run Claude Code in a Docker container that only gives Claude Code access to the current directory. Intent is to ensure Claude Code is unable to access host resources outside the current directory and a configuration directory.
+
+Host dir `~/ai-cli/claude` is used for Claude's persistence, e.g. API key, appearance options, etc.
 
 ## Requirements
 
