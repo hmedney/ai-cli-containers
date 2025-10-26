@@ -5,16 +5,16 @@ SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
 DOCKERFILE=claude-container.Dockerfile
 IMAGE_NAME=claude-container
-PROJECT_DIR=/home/hmedney/dev
 DATA_DIR="${HOME}/ai-cli/claude"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 CURRENT_USER=$(whoami)
 
+mkdir -p "${DATA_DIR}"
 docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
 docker run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
-  --volume "${PROJECT_DIR}:${PROJECT_DIR}"  \
+  --volume "${PWD}:${PWD}"  \
   --volume "${DATA_DIR}:/home/user" \
   --workdir "${PWD}" \
   --env "HOME=/home/user" \
