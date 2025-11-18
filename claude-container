@@ -18,14 +18,21 @@ case "$1" in
       ;;
 esac
 
-
+# make local data dir
 mkdir -p "${DATA_DIR}"
-docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
+
+# build image only if it doesn't exist
+if [ -z "$(docker images -q ${IMAGE_NAME} 2>/dev/null)" ]; then
+  echo "Building ${IMAGE_NAME} image..."
+  docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
+fi
+
+# start container with $DATA_DIR as Claude's user data and $PWD as current dir
 docker run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}"  \
   --volume "${DATA_DIR}:/home/user" \
-  --workdir "${PWD}" \gg
+  --workdir "${PWD}" \
   --env "HOME=/home/user" \
   ${IMAGE_NAME} \
   /usr/local/bin/claude "$@"
