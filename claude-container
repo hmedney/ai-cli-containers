@@ -9,13 +9,23 @@ DATA_DIR="${HOME}/claude-container"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
+# handle special commands and remove used args
+case "$1" in
+  --rebuild)
+      echo "Rebuilding container..."
+      shift
+      docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}" --no-cache --pull
+      ;;
+esac
+
+
 mkdir -p "${DATA_DIR}"
 docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
 docker run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}"  \
   --volume "${DATA_DIR}:/home/user" \
-  --workdir "${PWD}" \
+  --workdir "${PWD}" \gg
   --env "HOME=/home/user" \
   ${IMAGE_NAME} \
   /usr/local/bin/claude "$@"
