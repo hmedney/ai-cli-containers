@@ -11,7 +11,12 @@ CURRENT_GID=$(id -g)
 
 # handle special commands and remove used args
 case "$1" in
-  --rebuild)
+  --build-container)
+      echo "Rebuilding container..."
+      shift
+      docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
+      ;;
+  --rebuild-container)
       echo "Rebuilding container..."
       shift
       docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}" --no-cache --pull
