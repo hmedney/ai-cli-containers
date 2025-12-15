@@ -21,6 +21,10 @@ case "$1" in
       shift
       docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}" --no-cache --pull
       ;;
+  --container-help)
+      echo "cli options: --build-container, --rebuild-container"
+      exit 0
+      ;;
 esac
 
 # make local data dir
