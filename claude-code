@@ -1,0 +1,137 @@
+#!/bin/bash
+# ── claude-code ──────────────────────────────────────────────────
+# Wrapper to run Claude Code inside a container with:
+#   - $PWD mounted at the same path (your codebase)
+#   - Persistent config in ~/ai-tools/claude-code/
+#   - Optional network firewall (--firewall)
+#
+# Usage:
+#   claude-code                     # interactive session in $PWD
+#   claude-code --firewall          # with network restrictions
+#   claude-code --build             # rebuild image
+#   claude-code --rebuild           # rebuild image from scratch
+#   claude-code --update            # update claude code in image
+#   claude-code --help              # show help
+#   claude-code <any claude args>   # passed through to claude
+# ─────────────────────────────────────────────────────────────────
+set -e
+
+# ── Resolve script location (handles symlinks) ───────────────────
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
+
+# ── Configuration ─────────────────────────────────────────────────
+IMAGE_NAME="claude-code"
+DOCKERFILE="claude-code.Dockerfile"
+DATA_DIR="${HOME}/ai-tools/claude-code"
+
+# ── Handle special commands ───────────────────────────────────────
+case "$1" in
+  --build)
+    echo "Building ${IMAGE_NAME} image..."
+    docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
+    exit 0
+    ;;
+  --rebuild)
+    echo "Rebuilding ${IMAGE_NAME} image (no cache)..."
+    docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t "${IMAGE_NAME}" "${SCRIPT_DIR}" --no-cache --pull
+    exit 0
+    ;;
+  --update)
+    echo "Updating Claude Code inside the image..."
+    docker run --rm "${IMAGE_NAME}" bash -c "npm update -g @anthropic-ai/claude-code && claude --version"
+    echo ""
+    echo "Note: This updated the running container but not the image."
+    echo "Run '${0} --rebuild' to bake the update into the image."
+    exit 0
+    ;;
+  --help)
+    cat <<EOF
+claude-code — Run Claude Code in a container
+
+USAGE:
+  claude-code [OPTIONS] [CLAUDE_ARGS...]
+
+OPTIONS:
+  --build       Build the container image
+  --rebuild     Rebuild from scratch (no cache, pull latest base)
+  --update      Show current version / check for updates
+  --firewall    Enable network firewall (anti-exfiltration)
+  --help        Show this help
+
+ENVIRONMENT:
+  EXTRA_ALLOWED_DOMAINS   Space-separated extra domains for firewall
+                          e.g. "pypi.org my-registry.local"
+
+CONFIG:
+  Persistent data lives in: ${DATA_DIR}/
+    home/               → maps to container HOME (~/.claude/, etc.)
+
+  Per-project config lives in your repo as usual:
+    .claude/            → project settings, CLAUDE.md, etc.
+
+FILES (host paths):
+  ${DATA_DIR}/home/.claude/           Claude Code user settings
+  ${DATA_DIR}/home/.claude.json       MCP servers (user-scoped)
+  ${DATA_DIR}/home/.claude/CLAUDE.md  Global instructions
+EOF
+    exit 0
+    ;;
+esac
+
+# ── Parse --firewall flag ─────────────────────────────────────────
+ENABLE_FIREWALL=0
+DOCKER_CAPS=()
+CLAUDE_ARGS=()
+
+for arg in "$@"; do
+  case "$arg" in
+    --firewall)
+      ENABLE_FIREWALL=1
+      DOCKER_CAPS+=(--cap-add=NET_ADMIN --cap-add=NET_RAW)
+      ;;
+    *)
+      CLAUDE_ARGS+=("$arg")
+      ;;
+  esac
+done
+
+# ── Ensure data directory structure ───────────────────────────────
+mkdir -p "${DATA_DIR}/home/.claude"
+
+# ── Auto-build if image doesn't exist ─────────────────────────────
+if [ -z "$(docker images -q "${IMAGE_NAME}" 2>/dev/null)" ]; then
+  echo "Image '${IMAGE_NAME}' not found. Building..."
+  docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
+fi
+
+# ── SSH agent forwarding ─────────────────────────────────────────
+SSH_MOUNT=()
+if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+  SSH_MOUNT=(
+    --volume "${SSH_AUTH_SOCK}:/tmp/ssh-agent.sock"
+    --env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock"
+  )
+fi
+
+# ── Git config forwarding ────────────────────────────────────────
+GIT_MOUNT=()
+if [ -f "${HOME}/.gitconfig" ]; then
+  GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
+fi
+
+# ── Run ───────────────────────────────────────────────────────────
+exec docker run --rm -it \
+  --env "HOST_UID=$(id -u)" \
+  --env "HOST_GID=$(id -g)" \
+  --env "HOME=/home/coder" \
+  --env "ENABLE_FIREWALL=${ENABLE_FIREWALL}" \
+  --env "EXTRA_ALLOWED_DOMAINS=${EXTRA_ALLOWED_DOMAINS:-}" \
+  "${DOCKER_CAPS[@]}" \
+  --volume "${PWD}:${PWD}" \
+  --volume "${DATA_DIR}/home:/home/coder" \
+  "${SSH_MOUNT[@]}" \
+  "${GIT_MOUNT[@]}" \
+  --workdir "${PWD}" \
+  "${IMAGE_NAME}" \
+  claude "${CLAUDE_ARGS[@]}"

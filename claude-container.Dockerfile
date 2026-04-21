@@ -6,7 +6,8 @@ RUN apk add --no-cache \
   curl \
   jq \
   micro \
-  wget
+  wget \
+  git
 
 # install claude code
 RUN npm install -g @anthropic-ai/claude-code
