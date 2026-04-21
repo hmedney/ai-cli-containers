@@ -1,24 +1,31 @@
-FROM node:24.11.1-alpine3.22
+FROM node:24-trixie-slim
 
-# install utils
-RUN apk add --no-cache \
-  bash \
-  curl \
-  jq \
-  micro \
-  wget \
-  git
+# ── system packages ──────────────────────────────────────────────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      bash \
+      ca-certificates \
+      curl \
+      git \
+      jq \
+      less \
+      openssh-client \
+      ripgrep \
+      sudo \
+      iptables \
+      iproute2 \
+      dnsutils \
+      ipset \
+      gosu \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# install claude code
+# ── install claude code globally ─────────────────────────────────
 RUN npm install -g @anthropic-ai/claude-code
 
-# create os user
-RUN adduser -D claude
-USER claude
-WORKDIR /home/claude
+# ── setup local user ─────────────────────────────────
+RUN adduser coder
+USER coder
+WORKDIR /home/coder
 
-# set home dir for claude
-ENV HOME=/home/claude
-
-# enable rich terminal
+# ── setup environment ─────────────────────────────────
+ENV HOME=/home/coder
 ENV TERM=xterm-256color

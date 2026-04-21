@@ -5,7 +5,7 @@ SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
 DOCKERFILE=claude-container.Dockerfile
 IMAGE_NAME=claude-container
-DATA_DIR="${HOME}/claude-container"
+DATA_DIR="${HOME}/ai-tools/claude-code"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
@@ -36,11 +36,27 @@ if [ -z "$(docker images -q ${IMAGE_NAME} 2>/dev/null)" ]; then
   docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
 fi
 
+# ── SSH agent forwarding ─────────────────────────────────────────SSH_MOUNT=()
+if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+  SSH_MOUNT=(
+    --volume "${SSH_AUTH_SOCK}:/tmp/ssh-agent.sock"
+    --env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock"
+  )
+fi
+
+# ── Git config forwarding ────────────────────────────────────────
+GIT_MOUNT=()
+if [ -f "${HOME}/.gitconfig" ]; then
+  GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
+fi
+
 # start container with $DATA_DIR as Claude's user data and $PWD as current dir
 docker run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}"  \
-  --volume "${DATA_DIR}:/home/claude" \
+  --volume "${DATA_DIR}:/home/coder" \
+  "${SSH_MOUNT[@]}" \
+  "${GIT_MOUNT[@]}" \
   --workdir "${PWD}" \
   ${IMAGE_NAME} \
   claude "$@"

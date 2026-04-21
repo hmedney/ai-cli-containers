@@ -80,21 +80,21 @@ EOF
 esac
 
 # ── Parse --firewall flag ─────────────────────────────────────────
-ENABLE_FIREWALL=0
-DOCKER_CAPS=()
-CLAUDE_ARGS=()
+# ENABLE_FIREWALL=0
+# DOCKER_CAPS=()
+# CLAUDE_ARGS=()
 
-for arg in "$@"; do
-  case "$arg" in
-    --firewall)
-      ENABLE_FIREWALL=1
-      DOCKER_CAPS+=(--cap-add=NET_ADMIN --cap-add=NET_RAW)
-      ;;
-    *)
-      CLAUDE_ARGS+=("$arg")
-      ;;
-  esac
-done
+# for arg in "$@"; do
+#   case "$arg" in
+#     --firewall)
+#       ENABLE_FIREWALL=1
+#       DOCKER_CAPS+=(--cap-add=NET_ADMIN --cap-add=NET_RAW)
+#       ;;
+#     *)
+#       CLAUDE_ARGS+=("$arg")
+#       ;;
+#   esac
+# done
 
 # ── Ensure data directory structure ───────────────────────────────
 mkdir -p "${DATA_DIR}/home/.claude"
@@ -125,10 +125,8 @@ exec docker run --rm -it \
   --env "HOST_UID=$(id -u)" \
   --env "HOST_GID=$(id -g)" \
   --env "HOME=/home/coder" \
-  --env "ENABLE_FIREWALL=${ENABLE_FIREWALL}" \
-  --env "EXTRA_ALLOWED_DOMAINS=${EXTRA_ALLOWED_DOMAINS:-}" \
   "${DOCKER_CAPS[@]}" \
-  --volume "${PWD}:${PWD}" \
+  --volume "${PWD}" \
   --volume "${DATA_DIR}/home:/home/coder" \
   "${SSH_MOUNT[@]}" \
   "${GIT_MOUNT[@]}" \
