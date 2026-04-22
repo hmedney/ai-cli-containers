@@ -1,0 +1,14 @@
+#!/bin/bash
+
+IMAGE_NAME=aider
+DOCKERFILE=aider.Dockerfile
+DATA_DIR="${HOME}/ai-tools/aider"
+TOOL_CMD=aider
+
+EXTRA_ENV=(
+  --env "LM_STUDIO_API_KEY=dummy"
+  --env "LM_STUDIO_API_BASE=http://192.168.1.30:1234/api/v0"
+)
+
+# shellcheck source=lib/launch.sh
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib/launch.sh" --model lm_studio/gemma-4-e4b-it@4bit

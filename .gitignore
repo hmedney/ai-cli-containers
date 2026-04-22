@@ -1,2 +1,6 @@
 .claude
+.aider*
 .vscode
+.vscode-insiders*
+.vscode-remote*
+.vscode-server*
