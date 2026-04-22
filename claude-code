@@ -3,8 +3,8 @@
 # Resolve the script's path, handling symlinks
 SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
-DOCKERFILE=claude-container.Dockerfile
-IMAGE_NAME=claude-container
+DOCKERFILE=claude-code.Dockerfile
+IMAGE_NAME=claude-code
 DATA_DIR="${HOME}/ai-tools/claude-code"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
@@ -15,11 +15,13 @@ case "$1" in
       echo "Rebuilding container..."
       shift
       docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
+      exit 0
       ;;
   --rebuild-container)
       echo "Rebuilding container..."
       shift
       docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}" --no-cache --pull
+      exit 0
       ;;
   --container-help)
       echo "cli options: --build-container, --rebuild-container"
