@@ -1,67 +1,9 @@
 #!/bin/bash
 
-# Resolve the script's path, handling symlinks
-SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(dirname "${SCRIPT_PATH}")"
-DOCKERFILE=claude-code.Dockerfile
 IMAGE_NAME=claude-code
+DOCKERFILE=claude-code.Dockerfile
 DATA_DIR="${HOME}/ai-tools/claude-code"
-CURRENT_UID=$(id -u)
-CURRENT_GID=$(id -g)
+TOOL_CMD=claude
 
-# handle special commands and remove used args
-case "$1" in
-  --build-container)
-      echo "Rebuilding container..."
-      shift
-      docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
-      exit 0
-      ;;
-  --rebuild-container)
-      echo "Rebuilding container..."
-      shift
-      docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}" --no-cache --pull
-      exit 0
-      ;;
-  --container-help)
-      echo "cli options: --build-container, --rebuild-container"
-      exit 0
-      ;;
-esac
-
-# make local data dir
-mkdir -p "${DATA_DIR}"
-
-# build image only if it doesn't exist
-if [ -z "$(docker images -q ${IMAGE_NAME} 2>/dev/null)" ]; then
-  echo "Building ${IMAGE_NAME} image..."
-  docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t ${IMAGE_NAME} "${SCRIPT_DIR}"
-fi
-
-# ── SSH agent forwarding ─────────────────────────────────────────
-SSH_MOUNT=()
-if [ -n "${SSH_AUTH_SOCK:-}" ]; then
-  echo "Forwarding SSH agent..."
-  SSH_MOUNT=(
-    --volume "${SSH_AUTH_SOCK}:/tmp/ssh-agent.sock"
-    --env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock"
-  )
-fi
-
-# ── Git config forwarding ────────────────────────────────────────
-GIT_MOUNT=()
-if [ -f "${HOME}/.gitconfig" ]; then
-  GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
-fi
-
-# ── Start container ────────────────────────────────────────
-docker run --rm -it \
-  --user "${CURRENT_UID}:${CURRENT_GID}" \
-  --volume "${PWD}:${PWD}"  \
-  --volume "${DATA_DIR}:/home/user" \
-  --env HOME="/home/user" \
-  "${SSH_MOUNT[@]}" \
-  "${GIT_MOUNT[@]}" \
-  --workdir "${PWD}" \
-  ${IMAGE_NAME} \
-  claude "$@"
+# shellcheck source=lib/launch.sh
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib/launch.sh"
