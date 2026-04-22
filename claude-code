@@ -58,7 +58,8 @@ fi
 docker run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}"  \
-  --volume "${DATA_DIR}:/home/coder" \
+  --volume "${DATA_DIR}:/home/user" \
+  --env HOME="/home/user" \
   "${SSH_MOUNT[@]}" \
   "${GIT_MOUNT[@]}" \
   --workdir "${PWD}" \
