@@ -12,8 +12,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ripgrep \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+COPY gateway/gateway_key /home/node/id_rsa
+RUN chown node:node /home/node/id_rsa && chmod 600 /home/node/id_rsa
+COPY gateway/cli_entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+
 # ── install claude code globally ─────────────────────────────────
+USER node
 RUN npm install -g @anthropic-ai/claude-code
 
 # ── setup environment ─────────────────────────────────
 ENV TERM=xterm-256color
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
