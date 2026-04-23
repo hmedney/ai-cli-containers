@@ -5,7 +5,7 @@ services:
       - public_net
       - private_net
 
-  claude-code:
+  claude-code: &cli_tool
     build:
       context: .
       dockerfile: claude-code.Dockerfile
@@ -14,33 +14,11 @@ services:
       - private_net
     depends_on:
       - gateway
-    command:
-      - |
-        # 1. Establish the tunnel to the Home Server (192.168.1.30) via the Gateway
-        # ssh -i /tmp/id_rsa -o StrictHostKeyChecking=no -f -N \
-        #    -L 1234:192.168.1.30:1234 tunneluser@ai-gateway
 
-        # 2. Run the tool (Assuming it needs to hit the server at localhost:8080)
-        # claude-code --api-url http://localhost:8080
-        # /usr/bin/curl 127.0.0.1:1234/v1/models
-        whoami
-
-  # opencode:
-  #   build: . # Or point to your opencode Dockerfile
-  #   image: opencode-local
-  #   profiles: ["cli"]
-  #   networks:
-  #     - private_net
-  #   depends_on:
-  #     - gateway
-  #   volumes:
-  #     - ./internal_key:/tmp/id_rsa:ro
-  #   entrypoint: /bin/bash -c
-  #   command:
-  #     - |
-  #       ssh -i /tmp/id_rsa -o StrictHostKeyChecking=no -f -N \
-  #           -L 8080:192.168.1.30:80 tunneluser@ai-gateway
-  #       opencode --server http://localhost:8080
+  opencode:
+    <<: *cli_tool
+    build:
+      dockerfile: opencode.Dockerfile
 
 networks:
   public_net:

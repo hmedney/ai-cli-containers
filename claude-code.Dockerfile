@@ -14,11 +14,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY gateway/gateway_key /home/node/id_rsa
 RUN chown node:node /home/node/id_rsa && chmod 600 /home/node/id_rsa
+
 COPY gateway/cli_entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+RUN mkdir -p /usr/local/share/npm-global \
+    && chmod -R 777 /usr/local/share/npm-global
+ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
+ENV npm_config_cache=/usr/local/share/npm-global/.npm-cache
+ENV PATH=$PATH:/usr/local/share/npm-global/bin
 
 # ── install claude code globally ─────────────────────────────────
 USER node

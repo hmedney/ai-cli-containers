@@ -11,14 +11,12 @@ CURRENT_GID=$(id -g)
 case "$1" in
   --build-container)
     echo "Building ${IMAGE_NAME} image..."
-    shift
-    docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
+    docker compose build ${COMPOSE_SERVICE}
     exit 0
     ;;
   --rebuild-container)
     echo "Rebuilding ${IMAGE_NAME} image (no cache)..."
-    shift
-    docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t "${IMAGE_NAME}" "${SCRIPT_DIR}" --no-cache --pull
+    docker compose build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
   --container-help)
@@ -28,11 +26,6 @@ case "$1" in
 esac
 
 mkdir -p "${DATA_DIR}"
-
-if [ -z "$(docker images -q "${IMAGE_NAME}" 2>/dev/null)" ]; then
-  echo "Building ${IMAGE_NAME} image..."
-  docker build -f "${SCRIPT_DIR}/${DOCKERFILE}" -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
-fi
 
 SSH_MOUNT=()
 if [ -n "${SSH_AUTH_SOCK:-}" ]; then
@@ -48,7 +41,7 @@ if [ -f "${HOME}/.gitconfig" ]; then
   GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
 fi
 
-docker run --rm -it \
+docker compose run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}" \
   --volume "${DATA_DIR}:/home/user" \
@@ -57,5 +50,5 @@ docker run --rm -it \
   "${GIT_MOUNT[@]}" \
   "${EXTRA_ENV[@]}" \
   --workdir "${PWD}" \
-  "${IMAGE_NAME}" \
+  "${COMPOSE_SERVICE}" \
   ${TOOL_CMD} "$@"
