@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       less \
       openssh-client \
       ripgrep \
+      procps \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY gateway/gateway_key /home/node/id_rsa
