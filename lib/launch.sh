@@ -51,4 +51,4 @@ docker compose run --rm -it \
   "${EXTRA_ENV[@]}" \
   --workdir "${PWD}" \
   "${COMPOSE_SERVICE}" \
-  ${TOOL_CMD} "$@"
+  ${TOOL_CMD} $@

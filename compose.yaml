@@ -10,7 +10,9 @@ services:
   claude-code: &cli_tool
     build:
       context: .
-      dockerfile: claude-code.Dockerfile
+      dockerfile: node-tool.Dockerfile
+      args:
+        NPM_PACKAGE: "@anthropic-ai/claude-code"
     profiles: ["cli"] # Prevents auto-start with 'docker compose up'
     networks:
       - private_net
@@ -24,7 +26,26 @@ services:
   opencode:
     <<: *cli_tool
     build:
-      dockerfile: opencode.Dockerfile
+      context: .
+      dockerfile: node-tool.Dockerfile
+      args:
+        NPM_PACKAGE: opencode-ai
+
+  aider:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: python-tool.Dockerfile
+      args:
+        PIP_PACKAGE: aider-chat
+
+  goose:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: python-tool.Dockerfile
+      args:
+        BINARY_INSTALLER_URL: https://github.com/block/goose/releases/latest/download/download.sh
 
 networks:
   public_net:

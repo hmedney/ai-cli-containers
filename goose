@@ -1,7 +1,6 @@
 #!/bin/bash
 
-IMAGE_NAME=goose
-DOCKERFILE=goose.Dockerfile
+COMPOSE_SERVICE=goose
 DATA_DIR="${HOME}/ai-tools/goose"
 TOOL_CMD=goose
 
