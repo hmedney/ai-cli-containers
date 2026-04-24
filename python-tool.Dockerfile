@@ -26,12 +26,6 @@ RUN python3 -m venv $PYTHON_VENV \
 ENV PATH=$PYTHON_VENV/bin:$PATH
 
 # ── install tool ─────────────────────────────────────────────────
-RUN if [ -n "$PIP_PACKAGE" ]; then \
-      echo "Using PIP installer"; \
-      pip install --no-cache-dir "$PIP_PACKAGE"; \
-    elif [ -n "$BINARY_INSTALLER_URL" ]; then \
-      echo "Using binary installer at ${BINARY_INSTALLER_URL}"; \
-      curl -fsSL ${BINARY_INSTALLER_URL} | CONFIGURE=false bash; \
-  fi
+RUN pip install --no-cache-dir "$PIP_PACKAGE"
 
 ENV TERM=xterm-256color
