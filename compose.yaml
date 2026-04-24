@@ -1,6 +1,7 @@
 services:
   gateway:
     build: ./gateway
+    stop_grace_period: 5s
     volumes:
       - ./gateway/squid.conf:/etc/squid/squid.conf:ro
     networks:
@@ -43,9 +44,17 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: python-tool.Dockerfile
-      args:
-        BINARY_INSTALLER_URL: https://github.com/block/goose/releases/latest/download/download.sh
+      dockerfile: python-tool.Dockerfile # <-- Reverted to original state
+    # Removed args specific to Python installation, as we are using a base image now.
+    profiles: ["cli"] # Keep profile if needed to control startup
+    networks:
+      - private_net
+    environment:
+      https_proxy: http://gateway:3128
+      http_proxy: http://gateway:3128
+    entrypoint: ["bash", "-c"]
+    depends_on:
+      - gateway
 
 networks:
   public_net:

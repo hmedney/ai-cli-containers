@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       git \
       less \
       openssh-client \
+      bzip2 \
       ripgrep \
+      libgomp1 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ── Python venv in userspace (any uid:gid can run) ───────────────
@@ -25,9 +27,11 @@ ENV PATH=$PYTHON_VENV/bin:$PATH
 
 # ── install tool ─────────────────────────────────────────────────
 RUN if [ -n "$PIP_PACKAGE" ]; then \
+      echo "Using PIP installer"; \
       pip install --no-cache-dir "$PIP_PACKAGE"; \
     elif [ -n "$BINARY_INSTALLER_URL" ]; then \
-      curl -fsSL "$BINARY_INSTALLER_URL" | GOOSE_INSTALL_DIR=/usr/local/bin bash; \
-    fi
+      echo "Using binary installer at ${BINARY_INSTALLER_URL}"; \
+      curl -fsSL ${BINARY_INSTALLER_URL} | CONFIGURE=false bash; \
+  fi
 
 ENV TERM=xterm-256color
