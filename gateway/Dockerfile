@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add --no-cache squid && \
+RUN apk add --no-cache squid goaccess lnav micro jq && \
     mkdir -p /var/log/squid && \
     mkdir -p /var/run/squid && \
     chown -R squid:squid /var/log/squid && \
@@ -11,6 +11,8 @@ USER squid
 
 # Expose the proxy port
 EXPOSE 3128
+
+ENV TERM=xterm-256color
 
 # Run squid in the foreground
 CMD ["squid", "-N", "-d", "1"]
