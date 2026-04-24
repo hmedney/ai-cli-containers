@@ -44,17 +44,9 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: python-tool.Dockerfile # <-- Reverted to original state
-    # Removed args specific to Python installation, as we are using a base image now.
-    profiles: ["cli"] # Keep profile if needed to control startup
-    networks:
-      - private_net
-    environment:
-      https_proxy: http://gateway:3128
-      http_proxy: http://gateway:3128
-    entrypoint: ["bash", "-c"]
-    depends_on:
-      - gateway
+      dockerfile: debian-tool.Dockerfile
+      args:
+        INSTALL_COMMAND: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
 
 networks:
   public_net:
