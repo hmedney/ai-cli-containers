@@ -5,6 +5,7 @@
 EXTRA_ENV=("${EXTRA_ENV[@]}")
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
+COMPOSE_FILE="${SCRIPT_DIR}/compose.yaml"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
@@ -29,7 +30,6 @@ mkdir -p "${DATA_DIR}"
 
 SSH_MOUNT=()
 if [ -n "${SSH_AUTH_SOCK:-}" ]; then
-  echo "Forwarding SSH agent..."
   SSH_MOUNT=(
     --volume "${SSH_AUTH_SOCK}:/tmp/ssh-agent.sock"
     --env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock"
@@ -41,7 +41,7 @@ if [ -f "${HOME}/.gitconfig" ]; then
   GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
 fi
 
-docker compose run --rm -it \
+docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}" \
   --volume "${DATA_DIR}:/home/user" \
