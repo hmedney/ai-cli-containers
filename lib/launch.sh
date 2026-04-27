@@ -12,12 +12,12 @@ CURRENT_GID=$(id -g)
 case "$1" in
   --build-container)
     echo "Building ${IMAGE_NAME} image..."
-    docker compose build ${COMPOSE_SERVICE}
+    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
   --rebuild-container)
     echo "Rebuilding ${IMAGE_NAME} image (no cache)..."
-    docker compose build ${COMPOSE_SERVICE} --no-cache
+    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
   --container-help)
