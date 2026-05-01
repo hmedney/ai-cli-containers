@@ -5,7 +5,7 @@
 EXTRA_ENV=("${EXTRA_ENV[@]}")
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
-COMPOSE_FILE="${SCRIPT_DIR}/compose.yaml"
+COMPOSE_FILE="${SCRIPT_DIR}/compose/compose.yaml"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 

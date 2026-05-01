@@ -1,9 +1,9 @@
 services:
   gateway:
-    build: ./gateway
+    build: ../gateway
     stop_grace_period: 5s
     volumes:
-      - ./gateway/squid.conf:/etc/squid/squid.conf:ro
+      - ../gateway/squid.conf:/etc/squid/squid.conf:ro
     networks:
       - public_net
       - private_net
@@ -11,10 +11,10 @@ services:
   claude-code: &cli_tool
     build:
       context: .
-      dockerfile: node-tool.Dockerfile
+      dockerfile: nodejs.Dockerfile
       args:
         NPM_PACKAGE: "@anthropic-ai/claude-code"
-    profiles: ["cli"] # Prevents auto-start with 'docker compose up'
+    profiles: ["cli"] # prevents auto-start with docker compose up
     networks:
       - private_net
     environment:
@@ -28,7 +28,7 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: node-tool.Dockerfile
+      dockerfile: nodejs.Dockerfile
       args:
         NPM_PACKAGE: opencode-ai
 
@@ -36,7 +36,7 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: python-tool.Dockerfile
+      dockerfile: python.Dockerfile
       args:
         PIP_PACKAGE: aider-chat
 
@@ -44,7 +44,7 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: debian-tool.Dockerfile
+      dockerfile: debian.Dockerfile
       args:
         INSTALL_COMMAND: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
 
@@ -52,7 +52,7 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: node-tool.Dockerfile
+      dockerfile: nodejs.Dockerfile
       args:
         NPM_PACKAGE: "@mariozechner/pi-coding-agent"
         POST_INSTALL_SCRIPT: |-
