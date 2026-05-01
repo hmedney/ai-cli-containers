@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       openssh-client \
       bzip2 \
       ripgrep \
+      fd-find \
       libgomp1 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

@@ -48,6 +48,16 @@ services:
       args:
         INSTALL_COMMAND: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
 
+  pi:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: node-tool.Dockerfile
+      args:
+        NPM_PACKAGE: "@mariozechner/pi-coding-agent"
+        POST_INSTALL_SCRIPT: |-
+          echo "No extra pi packages yet."
+
 networks:
   public_net:
     driver: bridge
