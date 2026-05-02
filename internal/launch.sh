@@ -1,22 +1,22 @@
 #!/bin/bash
 # Common container launch logic.
-# Caller must set: IMAGE_NAME, DOCKERFILE, DATA_DIR, TOOL_CMD
-# Caller may set: EXTRA_ENV (array of --env flags, e.g. --env KEY or --env KEY=value)
-EXTRA_ENV=("${EXTRA_ENV[@]}")
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
-COMPOSE_FILE="${SCRIPT_DIR}/compose/compose.yaml"
+COMPOSE_FILE="${SCRIPT_DIR}/internal/compose/compose.yaml"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
+# optional extra env vars
+EXTRA_ENV=("${EXTRA_ENV[@]}")
+
 case "$1" in
   :build)
-    echo "Building ${IMAGE_NAME} image..."
+    echo "Building ${COMPOSE_SERVICE}..."
     docker compose --progress plain --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
   :rebuild)
-    echo "Rebuilding ${IMAGE_NAME} image (no cache)..."
+    echo "Rebuilding ${COMPOSE_SERVICE}..."
     docker compose --progress plain --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
