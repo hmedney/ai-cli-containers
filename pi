@@ -1,9 +1,11 @@
 #!/bin/bash
 
-COMPOSE_SERVICE=pi
-DATA_DIR="${HOME}/ai-tools/pi"
-TOOL_CMD=pi
-# TOOL_CMD=/bin/bash
+export COMPOSE_SERVICE="pi"
+export DATA_DIR="${HOME}/ai-tools/pi"
+export TOOL_CMD="pi"
 
-# shellcheck source=lib/launch.sh
-source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib/launch.sh"
+# Path to the internal engine
+LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
+
+# shellcheck source=internal/launch.sh
+exec "$LAUNCH_SCRIPT" "$@"

@@ -1,9 +1,11 @@
 #!/bin/bash
 
-COMPOSE_SERVICE=goose
-DATA_DIR="${HOME}/ai-tools/goose"
-TOOL_CMD=/home/user/.local/bin/goose
-# TOOL_CMD=bash
+export COMPOSE_SERVICE="goose"
+export DATA_DIR="${HOME}/ai-tools/goose"
+export TOOL_CMD="/home/user/.local/bin/goose"
 
-# shellcheck source=lib/launch.sh
-source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib/launch.sh"
+# Path to the internal engine
+LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
+
+# shellcheck source=internal/launch.sh
+exec "$LAUNCH_SCRIPT" "$@"

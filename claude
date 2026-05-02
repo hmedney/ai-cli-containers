@@ -1,9 +1,11 @@
 #!/bin/bash
 
-COMPOSE_SERVICE=claude-code
-DATA_DIR="${HOME}/ai-tools/claude-code"
-TOOL_CMD=claude
-# TOOL_CMD=/bin/bash
+export COMPOSE_SERVICE="claude-code"
+export DATA_DIR="${HOME}/ai-tools/claude-code"
+export TOOL_CMD="claude"
 
-# shellcheck source=lib/launch.sh
-source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib/launch.sh"
+# Path to the internal engine
+LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
+
+# shellcheck source=internal/launch.sh
+exec "$LAUNCH_SCRIPT" "$@"

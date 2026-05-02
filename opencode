@@ -1,13 +1,16 @@
 #!/bin/bash
 
-COMPOSE_SERVICE=opencode
-DATA_DIR="${HOME}/ai-tools/opencode"
-TOOL_CMD=opencode
+export COMPOSE_SERVICE="opencode"
+export DATA_DIR="${HOME}/ai-tools/opencode"
+export TOOL_CMD="opencode"
 
 EXTRA_ENV=(
   --env "OPENCODE_OFFLINE=1"
   --env "OPENCODE_AIRGAPPED=1"
 )
 
-# shellcheck source=lib/launch.sh
-source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib/launch.sh"
+# Path to the internal engine
+LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
+
+# shellcheck source=internal/launch.sh
+exec "$LAUNCH_SCRIPT" "$@"
