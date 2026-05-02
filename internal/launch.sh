@@ -25,6 +25,11 @@ case "$1" in
     TOOL_CMD=(/bin/bash)
     set -- # Clear "$@" so no tool args are passed to bash
     ;;
+  :watch)
+    echo "Tailing http proxy requests..."
+    docker compose -f ${COMPOSE_FILE} exec gateway lnav /var/log/squid/access.log
+    exit 0
+    ;;
   :help)
     echo "Meta commands: :build, :rebuild, :shell"
     exit 0

@@ -1,5 +1,0 @@
-#!/bin/bash
-SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-
-docker compose -f ${SCRIPT_DIR}/compose.yaml exec gateway lnav /var/log/squid/access.log
-# docker compose -f ${SCRIPT_DIR}/compose.yaml exec gateway sh -c "tail -f /var/log/squid/access.log | lnav"
