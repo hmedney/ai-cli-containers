@@ -10,19 +10,27 @@ CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
 case "$1" in
-  --build-container)
+  :build)
     echo "Building ${IMAGE_NAME} image..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --progress plain
+    docker compose --progress plain --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
-  --rebuild-container)
+  :rebuild)
     echo "Rebuilding ${IMAGE_NAME} image (no cache)..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}  --progress plain --no-cache
+    docker compose --progress plain --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
-  --container-help)
-    echo "$(basename "$0") container options: --build-container, --rebuild-container"
+  :shell)
+    echo "Entering shell..."
+    TOOL_CMD=(/bin/bash)
+    set -- # Clear "$@" so no tool args are passed to bash
+    ;;
+  :help)
+    echo "Meta commands: :build, :rebuild, :shell"
     exit 0
+    ;;
+  *)
+    # No meta-command, so we proceed as normal with "$@" intact
     ;;
 esac
 
