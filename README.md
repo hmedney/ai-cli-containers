@@ -1,8 +1,6 @@
-# Claude Code wrapper
+# AI CLI Sandbox
 
-Convenience script to run Claude Code in a Docker container that only gives Claude Code access to the current directory. Intent is to ensure Claude Code is unable to access host resources outside the current directory and a configuration directory.
-
-Host dir `~/ai-cli/claude` is used for Claude's persistence, e.g. API key, appearance options, etc.
+Launch AI CLI tools like claude code and opencode in containers with restricted file system and network access. Tools have no network access except to a http proxy service. This ensures any http requests are logged and can be limited to specified hosts.
 
 ## Requirements
 
@@ -20,14 +18,7 @@ One-time setup
 
 ```sh
 cd local_clone_of_this_repo
-sudo ln -s $PWD/claude-container /usr/local/bin/claude-container
+ln -s $PWD/claude ~/bin
 ```
 
-Start Claude Code
-
-```sh
-cd dir_to_use_claude_code_in
-
-# starts Claude Code in a container that can only access the current directory
-claude-container
-```
+Run `claude` normally. When launched, it will only have access to the current dir.
