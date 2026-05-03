@@ -6,8 +6,16 @@ COMPOSE_FILE="${SCRIPT_DIR}/internal/compose/compose.yaml"
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
-# optional extra env vars
-EXTRA_ENV=("${EXTRA_ENV[@]}")
+# Build --env flags from built-in (BUILTIN_ENV scalar) and user (${DATA_DIR}/.env) vars
+COMPUTED_ENV=()
+_load_env() {
+  local line
+  while IFS= read -r line; do
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    COMPUTED_ENV+=(--env "$line")
+  done <<< "$1"
+}
+[[ -n "${BUILTIN_ENV:-}" ]] && _load_env "$BUILTIN_ENV"
 
 case "$1" in
   :build)
@@ -41,6 +49,8 @@ esac
 
 mkdir -p "${DATA_DIR}"
 
+[[ -f "${DATA_DIR}/.env" ]] && _load_env "$(< "${DATA_DIR}/.env")"
+
 SSH_MOUNT=()
 if [ -n "${SSH_AUTH_SOCK:-}" ]; then
   SSH_MOUNT=(
@@ -61,7 +71,7 @@ docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --env HOME="/home/user" \
   "${SSH_MOUNT[@]}" \
   "${GIT_MOUNT[@]}" \
-  "${EXTRA_ENV[@]}" \
+  "${COMPUTED_ENV[@]}" \
   --workdir "${PWD}" \
   "${COMPOSE_SERVICE}" \
   "${TOOL_CMD[@]}" "$@"

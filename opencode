@@ -4,10 +4,8 @@ export COMPOSE_SERVICE="opencode"
 export DATA_DIR="${HOME}/ai-tools/opencode"
 export TOOL_CMD="opencode"
 
-EXTRA_ENV=(
-  --env "OPENCODE_OFFLINE=1"
-  --env "OPENCODE_AIRGAPPED=1"
-)
+export BUILTIN_ENV="OPENCODE_OFFLINE=1
+OPENCODE_AIRGAPPED=1"
 
 # Path to the internal engine
 LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
