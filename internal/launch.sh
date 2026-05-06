@@ -20,12 +20,12 @@ _load_env() {
 case "$1" in
   :build)
     echo "Building ${COMPOSE_SERVICE}..."
-    docker compose --progress plain --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
+    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
   :rebuild)
     echo "Rebuilding ${COMPOSE_SERVICE}..."
-    docker compose --progress plain --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
+    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
   :shell)
