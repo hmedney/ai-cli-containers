@@ -42,4 +42,5 @@ ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
 
 # ── install tool ─────────────────────────────────────────────────
+ARG UPGRADE_CACHE_BUST=1
 RUN pip install --no-cache-dir "$PIP_PACKAGE"

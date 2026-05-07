@@ -40,6 +40,7 @@ ENV LANGUAGE=en_US:en
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
 
+ARG UPGRADE_CACHE_BUST=1
 USER node
 RUN npm install -g ${NPM_PACKAGE}
 RUN if [ -n "${POST_INSTALL_SCRIPT}" ]; then sh -c "${POST_INSTALL_SCRIPT}"; fi

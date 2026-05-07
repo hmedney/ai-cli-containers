@@ -28,6 +28,11 @@ case "$1" in
     docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
+  :upgrade)
+    echo "Upgrading ${COMPOSE_SERVICE}..."
+    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
+    exit 0
+    ;;
   :shell)
     echo "Entering shell..."
     TOOL_CMD=(/bin/bash)
