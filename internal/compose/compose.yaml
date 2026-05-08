@@ -55,8 +55,9 @@ services:
       dockerfile: nodejs.Dockerfile
       args:
         NPM_PACKAGE: "@mariozechner/pi-coding-agent"
-        POST_INSTALL_SCRIPT: |-
-          echo "No extra pi packages yet."
+        # POST_INSTALL_SCRIPT: |-
+        #   pi install npm:pi-tasks
+        #   pi install npm:pi-ask-user
 
 networks:
   public_net:
