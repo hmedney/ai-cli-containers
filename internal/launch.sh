@@ -79,4 +79,4 @@ docker compose --file "${COMPOSE_FILE}" run --rm -it \
   "${COMPUTED_ENV[@]}" \
   --workdir "${PWD}" \
   "${COMPOSE_SERVICE}" \
-  "${TOOL_CMD[@]}" "$@"
+  "${TOOL_CMD[*]} \"\$@\"" -- "$@"
