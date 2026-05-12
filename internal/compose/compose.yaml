@@ -58,6 +58,7 @@ services:
         # POST_INSTALL_SCRIPT: |-
         #   pi install npm:pi-tasks
         #   pi install npm:pi-ask-user
+    entrypoint: ["/usr/local/bin/pi-entrypoint.sh"]
 
 networks:
   public_net:
