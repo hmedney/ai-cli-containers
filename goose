@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export COMPOSE_SERVICE="goose"
 export DATA_DIR="${HOME}/ai-tools/goose"

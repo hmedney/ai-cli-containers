@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export COMPOSE_SERVICE="pi"
 export DATA_DIR="${HOME}/ai-tools/pi"
@@ -8,4 +8,4 @@ export TOOL_CMD="pi"
 LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
 
 # shellcheck source=internal/launch.sh
-exec "$LAUNCH_SCRIPT" "$@"
+echo "${LAUNCH_SCRIPT}" "$@"
