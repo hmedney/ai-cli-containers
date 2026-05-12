@@ -25,4 +25,4 @@ if [ -f "$BUILD_SETTINGS" ]; then
   fi
 fi
 
-exec "$@"
+exec pi "$@"

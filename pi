@@ -3,9 +3,10 @@
 export COMPOSE_SERVICE="pi"
 export DATA_DIR="${HOME}/ai-tools/pi"
 export TOOL_CMD="pi"
+export COMPOSE_ENTRYPOINT="/home/node/pi-entrypoint.sh"
 
 # Path to the internal engine
 LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
 
 # shellcheck source=internal/launch.sh
-echo "${LAUNCH_SCRIPT}" "$@"
+exec "$LAUNCH_SCRIPT" "$@"

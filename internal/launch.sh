@@ -35,7 +35,7 @@ case "$1" in
     ;;
   :shell)
     echo "Entering shell..."
-    TOOL_CMD=(/bin/bash)
+    TOOL_CMD="/bin/bash"
     set -- # Clear "$@" so no tool args are passed to bash
     ;;
   :watch)
@@ -70,6 +70,7 @@ if [ -f "${HOME}/.gitconfig" ]; then
 fi
 
 docker compose --file "${COMPOSE_FILE}" run --rm -it \
+  --entrypoint "${COMPOSE_ENTRYPOINT:-${TOOL_CMD}}" \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}" \
   --volume "${DATA_DIR}:/home/user" \
@@ -79,4 +80,4 @@ docker compose --file "${COMPOSE_FILE}" run --rm -it \
   "${COMPUTED_ENV[@]}" \
   --workdir "${PWD}" \
   "${COMPOSE_SERVICE}" \
-  "${TOOL_CMD[*]} \"\$@\"" -- "$@"
+  "$@"

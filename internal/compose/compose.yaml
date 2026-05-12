@@ -20,7 +20,6 @@ services:
     environment:
       https_proxy: http://gateway:3128
       http_proxy: http://gateway:3128
-    entrypoint: ["bash", "-c"]
     depends_on:
       - gateway
 
@@ -57,7 +56,6 @@ services:
         NPM_PACKAGE: "@mariozechner/pi-coding-agent"
         POST_INSTALL_SCRIPT: |-
           pi install npm:pi-ask-user
-    entrypoint: ["/home/node/pi-entrypoint.sh"]
 
 networks:
   public_net:
