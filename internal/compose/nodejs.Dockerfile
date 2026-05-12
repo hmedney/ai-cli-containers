@@ -46,12 +46,12 @@ RUN npm install -g ${NPM_PACKAGE}
 RUN if [ -n "${POST_INSTALL_SCRIPT}" ]; then sh -c "${POST_INSTALL_SCRIPT}"; fi
 
 # Preserve build‑time Pi settings for runtime merging.
-RUN mkdir -p /usr/local/share/pi && \
-    if [ -f /home/node/.pi/agent/settings.json ]; then \
-      cp /home/node/.pi/agent/settings.json /usr/local/share/pi/build-settings.json && \
-      chmod 644 /usr/local/share/pi/build-settings.json; \
-    fi
+# RUN mkdir -p /usr/local/share/pi && \
+#     if [ -f /home/node/.pi/agent/settings.json ]; then \
+#       cp /home/node/.pi/agent/settings.json /usr/local/share/pi/build-settings.json && \
+#       chmod 644 /usr/local/share/pi/build-settings.json; \
+#     fi
 
 # Copy the entrypoint script into the image
-COPY pi-entrypoint.sh /usr/local/bin/pi-entrypoint.sh
-RUN chmod +x /usr/local/bin/pi-entrypoint.sh
+COPY pi-entrypoint.sh /home/node/pi-entrypoint.sh
+# RUN chmod +x /usr/local/bin/pi-entrypoint.sh
