@@ -23,6 +23,32 @@ services:
     depends_on:
       - gateway
 
+  codex:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: nodejs.Dockerfile
+      args:
+        NPM_PACKAGE: "@openai/codex"
+
+  gemini:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: nodejs.Dockerfile
+      args:
+        NPM_PACKAGE: "@google/gemini-cli"
+
+  cline:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: nodejs.Dockerfile
+      args:
+        NPM_PACKAGE: cline
+        POST_INSTALL_SCRIPT: |-
+          npm install -g kanban
+
   opencode:
     <<: *cli_tool
     build:

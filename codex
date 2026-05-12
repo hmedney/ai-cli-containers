@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+export COMPOSE_SERVICE="codex"
+export DATA_DIR="${HOME}/ai-tools/codex"
+export TOOL_CMD="codex"
+
+# Path to the internal engine
+LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
+
+# shellcheck source=internal/launch.sh
+exec "$LAUNCH_SCRIPT" "$@"
