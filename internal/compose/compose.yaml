@@ -13,7 +13,8 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
-        NPM_PACKAGE: "@anthropic-ai/claude-code"
+        INSTALL_COMMAND: |-
+          npm install -g @anthropic-ai/claude-code
     profiles: ["cli"] # prevents auto-start with docker compose up
     networks:
       - private_net
@@ -29,7 +30,8 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
-        NPM_PACKAGE: "@openai/codex"
+        INSTALL_COMMAND: |-
+          npm install -g @openai/codex
 
   gemini:
     <<: *cli_tool
@@ -40,22 +42,22 @@ services:
         NPM_PACKAGE: "@google/gemini-cli"
 
   cline:
-    <<: *cli_tool
     build:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
-        NPM_PACKAGE: cline
-        POST_INSTALL_SCRIPT: |-
+        INSTALL_COMMAND: |-
+          npm install -g cline
           npm install -g kanban
 
   opencode:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: nodejs.Dockerfile
+      dockerfile: debian.Dockerfile
       args:
-        NPM_PACKAGE: opencode-ai
+        INSTALL_COMMAND: |-
+          curl -fsSL https://opencode.ai/install | bash
 
   aider:
     <<: *cli_tool

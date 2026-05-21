@@ -20,7 +20,7 @@ _load_env() {
 case "$1" in
   :build)
     echo "Building ${COMPOSE_SERVICE}..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
+    docker compose --file "${COMPOSE_FILE}" build --progress plain ${COMPOSE_SERVICE}
     exit 0
     ;;
   :rebuild)
@@ -30,7 +30,7 @@ case "$1" in
     ;;
   :upgrade)
     echo "Upgrading ${COMPOSE_SERVICE}..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
+    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --progress plain --build-arg UPGRADE_CACHE_BUST=$(date +%s)
     exit 0
     ;;
   :shell)

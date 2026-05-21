@@ -33,6 +33,11 @@ ENV COLORTERM=truecolor
 
 ARG UPGRADE_CACHE_BUST=1
 
+RUN useradd -m -u 2222 appuser
+USER appuser
+
 RUN bash <<EOF
 ${INSTALL_COMMAND}
 EOF
+
+RUN chmod -R 777 /home/appuser
