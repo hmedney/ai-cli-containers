@@ -1,7 +1,7 @@
+# syntax=docker/dockerfile:1
 FROM node:24-trixie-slim
 
-ARG NPM_PACKAGE
-ARG POST_INSTALL_SCRIPT
+ARG INSTALL_COMMAND
 
 # ── system packages ──────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -42,8 +42,10 @@ ENV COLORTERM=truecolor
 
 ARG UPGRADE_CACHE_BUST=1
 USER node
-RUN npm install -g ${NPM_PACKAGE}
-RUN if [ -n "${POST_INSTALL_SCRIPT}" ]; then sh -c "${POST_INSTALL_SCRIPT}"; fi
+
+RUN bash <<EOF
+${INSTALL_COMMAND}
+EOF
 
 # Preserve build‑time Pi settings for runtime merging.
 # RUN mkdir -p /usr/local/share/pi && \

@@ -79,8 +79,8 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
-        NPM_PACKAGE: "@mariozechner/pi-coding-agent"
-        POST_INSTALL_SCRIPT: |-
+        INSTALL_COMMAND: |-
+          npm install -g --ignore-scripts @earendil-works/pi-coding-agent
           pi install npm:pi-ask-user
 
 networks:
