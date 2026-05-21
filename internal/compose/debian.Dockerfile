@@ -1,6 +1,6 @@
 FROM debian:trixie-slim
 
-ARG INSTALL_COMMAND=""
+ARG INSTALL_COMMAND
 
 # Install necessary system packages common to all tools if needed
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -32,4 +32,7 @@ ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
 
 ARG UPGRADE_CACHE_BUST=1
-RUN bash -c "${INSTALL_COMMAND}"
+
+RUN bash <<EOF
+${INSTALL_COMMAND}
+EOF
