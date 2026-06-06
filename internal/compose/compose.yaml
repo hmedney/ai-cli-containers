@@ -83,7 +83,6 @@ services:
       args:
         INSTALL_COMMAND: |-
           npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-          pi install npm:pi-ask-user
 
 networks:
   public_net:
