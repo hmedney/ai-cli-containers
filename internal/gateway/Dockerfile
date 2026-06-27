@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.24
 
 RUN apk add --no-cache squid goaccess lnav micro jq && \
     mkdir -p /var/log/squid && \
