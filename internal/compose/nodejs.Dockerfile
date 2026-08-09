@@ -43,17 +43,8 @@ ENV COLORTERM=truecolor
 ARG UPGRADE_CACHE_BUST=1
 USER node
 
+RUN npm config set allow-remote all
+
 RUN bash <<EOF
 ${INSTALL_COMMAND}
 EOF
-
-# Preserve build‑time Pi settings for runtime merging.
-# RUN mkdir -p /usr/local/share/pi && \
-#     if [ -f /home/node/.pi/agent/settings.json ]; then \
-#       cp /home/node/.pi/agent/settings.json /usr/local/share/pi/build-settings.json && \
-#       chmod 644 /usr/local/share/pi/build-settings.json; \
-#     fi
-
-# Copy the entrypoint script into the image
-COPY pi-entrypoint.sh /home/node/pi-entrypoint.sh
-# RUN chmod +x /usr/local/bin/pi-entrypoint.sh
