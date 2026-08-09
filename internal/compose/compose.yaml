@@ -30,8 +30,7 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
-        INSTALL_COMMAND: |-
-          npm install -g @openai/codex
+        INSTALL_COMMAND: npm install -g @openai/codex
 
   gemini:
     <<: *cli_tool
@@ -39,7 +38,7 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
-        NPM_PACKAGE: "@google/gemini-cli"
+        INSTALL_CMD: npm install -g @google/gemini-cli
 
   cline:
     build:
@@ -56,8 +55,7 @@ services:
       context: .
       dockerfile: debian.Dockerfile
       args:
-        INSTALL_COMMAND: |-
-          curl -fsSL https://opencode.ai/install | bash
+        INSTALL_COMMAND: curl -fsSL https://opencode.ai/install | bash
 
   aider:
     <<: *cli_tool
@@ -65,7 +63,7 @@ services:
       context: .
       dockerfile: python.Dockerfile
       args:
-        PIP_PACKAGE: aider-chat
+        INSTALL_COMMAND: pip install aider-chat
 
   goose:
     <<: *cli_tool
