@@ -84,6 +84,14 @@ services:
         INSTALL_COMMAND: |-
           npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
+  prime-agent:
+    <<: *cli_tool
+    build:
+      context: .
+      dockerfile: nodejs.Dockerfile
+      args:
+        INSTALL_COMMAND: curl -fsSL https://app.primeintellect.ai/prime-agent/install.sh | sh
+
 networks:
   public_net:
     driver: bridge
