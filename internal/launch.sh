@@ -3,24 +3,14 @@
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 COMPOSE_FILE="${SCRIPT_DIR}/internal/compose/compose.yaml"
+CURRENT_USERNAME=$(id -u -n)
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
-
-# Build --env flags from built-in (BUILTIN_ENV scalar) and user (${DATA_DIR}/.env) vars
-COMPUTED_ENV=()
-_load_env() {
-  local line
-  while IFS= read -r line; do
-    [[ -z "$line" || "$line" == \#* ]] && continue
-    COMPUTED_ENV+=(--env "$line")
-  done <<< "$1"
-}
-[[ -n "${BUILTIN_ENV:-}" ]] && _load_env "$BUILTIN_ENV"
 
 case "$1" in
   :build)
     echo "Building ${COMPOSE_SERVICE}..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --progress plain
     exit 0
     ;;
   :rebuild)
@@ -54,8 +44,6 @@ esac
 
 mkdir -p "${DATA_DIR}"
 
-[[ -f "${DATA_DIR}/.env" ]] && _load_env "$(< "${DATA_DIR}/.env")"
-
 SSH_MOUNT=()
 if [ -n "${SSH_AUTH_SOCK:-}" ]; then
   SSH_MOUNT=(
@@ -69,15 +57,17 @@ if [ -f "${HOME}/.gitconfig" ]; then
   GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
 fi
 
-docker compose --file "${COMPOSE_FILE}" run --rm -it \
+CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --entrypoint "${COMPOSE_ENTRYPOINT:-${TOOL_CMD}}" \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}" \
-  --volume "${DATA_DIR}:/home/user" \
-  --env HOME="/home/user" \
+  --volume "${DATA_DIR}:${DATA_DIR}" \
+  --env HOME="${HOME}" \
+  --env USER="${CURRENT_USERNAME}" \
+  --env UID="${CURRENT_UID}" \
+  --env GID="${CURRENT_GID}" \
   "${SSH_MOUNT[@]}" \
   "${GIT_MOUNT[@]}" \
-  "${COMPUTED_ENV[@]}" \
   --workdir "${PWD}" \
   "${COMPOSE_SERVICE}" \
   "$@"

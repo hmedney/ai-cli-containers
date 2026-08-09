@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export COMPOSE_SERVICE="prime-agent"
-export DATA_DIR="${HOME}/ai-tools/prime-agent"
+export DATA_DIR="${HOME}/.prime"
 export TOOL_CMD="prime-agent"
 
 # Path to the internal engine
