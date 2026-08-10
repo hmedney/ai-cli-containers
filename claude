@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export COMPOSE_SERVICE="claude-code"
-export DATA_DIR="${HOME}/ai-tools/claude-code"
+export DATA_DIR="${HOME}/.claude"
 export TOOL_CMD="claude"
 
 # Path to the internal engine

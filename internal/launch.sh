@@ -3,6 +3,7 @@
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 COMPOSE_FILE="${SCRIPT_DIR}/internal/compose/compose.yaml"
+CURRENT_HOME="${HOME}"
 CURRENT_USERNAME=$(id -u -n)
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
@@ -10,17 +11,17 @@ CURRENT_GID=$(id -g)
 case "$1" in
   :build)
     echo "Building ${COMPOSE_SERVICE}..."
-    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" CURRENT_HOME="${CURRENT_HOME}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
   :rebuild)
     echo "Rebuilding ${COMPOSE_SERVICE}..."
-    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" CURRENT_HOME="${CURRENT_HOME}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
   :upgrade)
     echo "Upgrading ${COMPOSE_SERVICE}..."
-    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" CURRENT_HOME="${CURRENT_HOME}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
     exit 0
     ;;
   :shell)
@@ -57,15 +58,11 @@ if [ -f "${HOME}/.gitconfig" ]; then
   GIT_MOUNT=(--volume "${HOME}/.gitconfig:/etc/gitconfig:ro")
 fi
 
-CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" run --rm -it \
+CURRENT_HOME="${CURRENT_HOME}" CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --entrypoint "${COMPOSE_ENTRYPOINT:-${TOOL_CMD}}" \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}" \
   --volume "${DATA_DIR}:${DATA_DIR}" \
-  --env HOME="${HOME}" \
-  --env USER="${CURRENT_USERNAME}" \
-  --env UID="${CURRENT_UID}" \
-  --env GID="${CURRENT_GID}" \
   "${SSH_MOUNT[@]}" \
   "${GIT_MOUNT[@]}" \
   --workdir "${PWD}" \

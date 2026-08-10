@@ -5,6 +5,7 @@ ARG NODEJS_VERSION="24"
 ARG NVM_VERSION="v0.40.6"
 
 # Capture host credentials
+ARG CURRENT_HOME
 ARG CURRENT_USERNAME
 ARG CURRENT_UID
 ARG CURRENT_GID
@@ -34,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # 5. Shift context completely to the mirrored user
 USER $CURRENT_USERNAME
-ENV HOME=/home/$CURRENT_USERNAME
+ENV HOME=$CURRENT_HOME
 WORKDIR $HOME
 
 # Create Python venv in userspace
