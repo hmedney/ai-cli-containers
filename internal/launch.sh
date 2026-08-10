@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Common container launch logic.
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
@@ -10,17 +10,17 @@ CURRENT_GID=$(id -g)
 case "$1" in
   :build)
     echo "Building ${COMPOSE_SERVICE}..."
-    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --progress plain
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
   :rebuild)
     echo "Rebuilding ${COMPOSE_SERVICE}..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
     exit 0
     ;;
   :upgrade)
     echo "Upgrading ${COMPOSE_SERVICE}..."
-    docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
+    CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
     exit 0
     ;;
   :shell)

@@ -32,6 +32,7 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
+        <<: *build_args
         INSTALL_COMMAND: npm install -g @openai/codex
 
   gemini:
@@ -40,6 +41,7 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
+        <<: *build_args
         INSTALL_CMD: npm install -g @google/gemini-cli
 
   cline:
@@ -47,6 +49,7 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
+        <<: *build_args
         INSTALL_COMMAND: |-
           npm install -g cline
           npm install -g kanban
@@ -55,8 +58,9 @@ services:
     <<: *cli_tool
     build:
       context: .
-      dockerfile: debian.Dockerfile
+      dockerfile: common.Dockerfile
       args:
+        <<: *build_args
         INSTALL_COMMAND: curl -fsSL https://opencode.ai/install | bash
 
   aider:
@@ -65,6 +69,7 @@ services:
       context: .
       dockerfile: python.Dockerfile
       args:
+        <<: *build_args
         INSTALL_COMMAND: pip install aider-chat
 
   goose:
@@ -73,6 +78,7 @@ services:
       context: .
       dockerfile: debian.Dockerfile
       args:
+        <<: *build_args
         INSTALL_COMMAND: curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
 
   pi:
@@ -81,6 +87,7 @@ services:
       context: .
       dockerfile: nodejs.Dockerfile
       args:
+        <<: *build_args
         INSTALL_COMMAND: npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
   prime-agent:

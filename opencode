@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 export COMPOSE_SERVICE="opencode"
-export DATA_DIR="${HOME}/ai-tools/opencode"
-export TOOL_CMD="/home/appuser/.opencode/bin/opencode"
+export DATA_DIR="${HOME}/.config/opencode"
+export TOOL_CMD="${HOME}/.opencode/bin/opencode"
 
 export BUILTIN_ENV="OPENCODE_OFFLINE=1
 OPENCODE_AIRGAPPED=1"
