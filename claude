@@ -7,5 +7,4 @@ export TOOL_CMD="claude"
 # Path to the internal engine
 LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
 
-# shellcheck source=internal/launch.sh
 exec "$LAUNCH_SCRIPT" "$@"
