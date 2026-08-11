@@ -59,7 +59,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install
   && nvm alias default $NODEJS_VERSION \
   && npm install npm@latest -g \
   && npm config set allow-remote all
-ENV PATH=$HOME/.nvm/current/bin:$PATH
+ENV PATH=$HOME/.nvm/current/bin:$HOME/.local/bin:$HOME/bin:$PATH
 
 # default editor
 ENV EDITOR=micro
