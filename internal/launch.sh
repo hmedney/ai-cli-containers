@@ -13,7 +13,9 @@ function with_env() {
 }
 
 # setup local dir
-mkdir -p ${HOME}/cli-tools/${COMPOSE_SERVICE}
+HOST_TOOL_HOME="${HOME}/cli-tools/${COMPOSE_SERVICE}"
+CONTAINER_TOOL_HOME="${HOME}/cli-tool"
+mkdir -p "${HOST_TOOL_HOME}"
 
 case "$1" in
   :build)
@@ -37,7 +39,7 @@ case "$1" in
     ;;
   :watch)
     echo "Tailing http proxy requests..."
-    docker compose --file "${COMPOSE_FILE}" exec gateway lnav /var/log/squid/access.log
+    with_env docker compose --file "${COMPOSE_FILE}" exec gateway lnav /var/log/squid/access.log
     exit 0
     ;;
   :help)
@@ -64,11 +66,10 @@ fi
 
 with_env docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
+  --volume "${PWD}:${PWD}" \
+  --volume "${HOST_TOOL_HOME}:${CONTAINER_TOOL_HOME}" \
+  --env HOME="${CONTAINER_TOOL_HOME}" \
   "${SSH_MOUNT[@]}" \
   "${GIT_MOUNT[@]}" \
   "${COMPOSE_SERVICE}" \
   "$@"
-
-
-  # --volume "${PWD}:${PWD}" \
-  # --volume "${DATA_DIR}:${DATA_DIR}" \

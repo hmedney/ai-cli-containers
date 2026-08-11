@@ -23,7 +23,7 @@ services:
     networks:
       - private_net
     working_dir: ${PWD}
-    environment:
+    environment: &environment
       https_proxy: http://gateway:3128
       http_proxy: http://gateway:3128
     depends_on:
@@ -65,11 +65,15 @@ services:
   opencode:
     <<: *cli_tool
     build:
-      context: .
-      dockerfile: common.Dockerfile
+      <<: *build
       args:
         <<: *build_args
         INSTALL_COMMAND: curl -fsSL https://opencode.ai/install | bash
+    environment:
+      <<: *environment
+      OPENCODE_OFFLINE: "1"
+      OPENCODE_AIRGAPPED: "1"
+    entrypoint: ${HOME}/.opencode/bin/opencode
 
   aider:
     <<: *cli_tool
@@ -92,20 +96,20 @@ services:
   pi:
     <<: *cli_tool
     build:
-      context: .
-      dockerfile: common.Dockerfile
+      <<: *build
       args:
         <<: *build_args
         INSTALL_COMMAND: npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+    entrypoint: pi
 
   prime-agent:
     <<: *cli_tool
     build:
-      context: .
-      dockerfile: common.Dockerfile
+      <<: *build
       args:
         <<: *build_args
         INSTALL_COMMAND: curl -fsSL https://app.primeintellect.ai/prime-agent/install.sh | sh
+    entrypoint: prime-agent
 
 networks:
   public_net:
