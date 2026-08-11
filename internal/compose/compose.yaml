@@ -17,7 +17,7 @@ services:
         CURRENT_USERNAME: ${CURRENT_USERNAME}
         CURRENT_UID: ${CURRENT_UID}
         CURRENT_GID: ${CURRENT_GID}
-        INSTALL_COMMAND: npm install -g @anthropic-ai/claude-code
+        INSTALL_COMMAND: curl -fsSL https://claude.ai/install.sh | bash
     profiles: ["cli"] # prevents auto-start with docker compose up
     networks:
       - private_net
