@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-export COMPOSE_SERVICE="claude-code"
-export DATA_DIR="${HOME}/.claude"
-export TOOL_CMD="claude"
-
 # Path to the internal engine
 LAUNCH_SCRIPT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/internal/launch.sh"
+SCRIPT_NAME="$(basename "$0")"
 
-exec "$LAUNCH_SCRIPT" "$@"
+# run common launch script
+COMPOSE_SERVICE="${SCRIPT_NAME}" exec "${LAUNCH_SCRIPT}" "$@"

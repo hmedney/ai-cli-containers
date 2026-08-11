@@ -8,8 +8,8 @@ services:
       - public_net
       - private_net
 
-  claude-code: &cli_tool
-    build:
+  claude: &cli_tool
+    build: &build
       context: .
       dockerfile: common.Dockerfile
       args: &build_args
@@ -17,24 +17,31 @@ services:
         CURRENT_USERNAME: ${CURRENT_USERNAME}
         CURRENT_UID: ${CURRENT_UID}
         CURRENT_GID: ${CURRENT_GID}
+        # override for each cli
         INSTALL_COMMAND: curl -fsSL https://claude.ai/install.sh | bash
     profiles: ["cli"] # prevents auto-start with docker compose up
     networks:
       - private_net
+    working_dir: ${PWD}
     environment:
       https_proxy: http://gateway:3128
       http_proxy: http://gateway:3128
     depends_on:
       - gateway
+    # volumes:
+    #   - ${PWD}:${PWD}
+    #   - ${HOME}/cli-tools/${COMPOSE_SERVICE}:${HOME}
+    # override these keys for each cli
+    entrypoint: claude
 
   codex:
     <<: *cli_tool
     build:
-      context: .
-      dockerfile: common.Dockerfile
+      <<: *build
       args:
         <<: *build_args
         INSTALL_COMMAND: npm install -g @openai/codex
+    entrypoint: codex
 
   gemini:
     <<: *cli_tool
