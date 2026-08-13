@@ -70,5 +70,6 @@ with_env docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --volume "${PWD}:${PWD}" \
   --volume "${HOST_TOOL_HOME}:${CONTAINER_TOOL_HOME}" \
   --env HOME="${CONTAINER_TOOL_HOME}" \
+  "${GIT_MOUNT[@]}" \
   "${COMPOSE_SERVICE}" \
   "$@"
