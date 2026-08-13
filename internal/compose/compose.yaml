@@ -50,17 +50,19 @@ services:
       dockerfile: common.Dockerfile
       args:
         <<: *build_args
-        INSTALL_CMD: npm install -g @google/gemini-cli
+        INSTALL_COMMAND: npm install -g @google/gemini-cli
+    entrypoint: gemini
 
   cline:
+    <<: *cli_tool
     build:
-      context: .
-      dockerfile: common.Dockerfile
+      <<: *build
       args:
         <<: *build_args
         INSTALL_COMMAND: |-
           npm install -g cline
           npm install -g kanban
+    entrypoint: cline
 
   opencode:
     <<: *cli_tool
