@@ -28,10 +28,7 @@ services:
       http_proxy: http://gateway:3128
     depends_on:
       - gateway
-    # volumes:
-    #   - ${PWD}:${PWD}
-    #   - ${HOME}/cli-tools/${COMPOSE_SERVICE}:${HOME}
-    # override these keys for each cli
+    # override for each cli
     entrypoint: claude
 
   codex:
@@ -93,7 +90,8 @@ services:
       dockerfile: common.Dockerfile
       args:
         <<: *build_args
-        INSTALL_COMMAND: pip install aider-chat
+        INSTALL_COMMAND: curl -LsSf https://aider.chat/install.sh | sh
+    entrypoint: aider
 
   goose:
     <<: *cli_tool
