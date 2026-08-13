@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Common container launch script.
 
 SCRIPT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
@@ -69,7 +70,5 @@ with_env docker compose --file "${COMPOSE_FILE}" run --rm -it \
   --volume "${PWD}:${PWD}" \
   --volume "${HOST_TOOL_HOME}:${CONTAINER_TOOL_HOME}" \
   --env HOME="${CONTAINER_TOOL_HOME}" \
-  "${SSH_MOUNT[@]}" \
-  "${GIT_MOUNT[@]}" \
   "${COMPOSE_SERVICE}" \
   "$@"
