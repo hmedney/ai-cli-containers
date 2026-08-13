@@ -9,6 +9,12 @@ CURRENT_USERNAME=$(id -u -n)
 CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
+if [ "${PWD}" = "${CURRENT_HOME}" ]; then
+  echo "tool cannot be run from \$HOME (${CURRENT_HOME})."
+  echo "Please cd into a project directory and try again."
+  exit 1
+fi
+
 function with_env() {
   COMPOSE_SERVICE="${COMPOSE_SERVICE}" CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" CURRENT_HOME="${CURRENT_HOME}" "$@"
 }
