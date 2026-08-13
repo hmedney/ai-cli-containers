@@ -1,6 +1,5 @@
 FROM python:3.12-slim-trixie
 
-ARG INSTALL_COMMAND
 ARG NODEJS_VERSION="24"
 ARG NVM_VERSION="v0.40.6"
 
@@ -75,6 +74,7 @@ ENV COLORTERM=truecolor
 # allow for quick tool upgrades
 ARG UPGRADE_CACHE_BUST=1
 
+ARG INSTALL_COMMAND
 RUN bash <<EOF
 ${INSTALL_COMMAND}
 EOF
