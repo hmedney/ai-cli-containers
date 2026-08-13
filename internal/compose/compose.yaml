@@ -77,6 +77,15 @@ services:
       OPENCODE_AIRGAPPED: "1"
     entrypoint: ${HOME}/.opencode/bin/opencode
 
+  omp:
+    <<: *cli_tool
+    build:
+      <<: *build
+      args:
+        <<: *build_args
+        INSTALL_COMMAND: curl -fsSL https://omp.sh/install | sh
+    entrypoint: omp
+
   aider:
     <<: *cli_tool
     build:
