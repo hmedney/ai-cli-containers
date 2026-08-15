@@ -120,6 +120,15 @@ services:
         INSTALL_COMMAND: curl -fsSL https://app.primeintellect.ai/prime-agent/install.sh | sh
     entrypoint: prime-agent
 
+  jcode:
+    <<: *cli_tool
+    build:
+      <<: *build
+      args:
+        <<: *build_args
+        INSTALL_COMMAND: curl -fsSL https://jcode.sh/install | bash
+    entrypoint: jcode
+
 networks:
   public_net:
     driver: bridge
