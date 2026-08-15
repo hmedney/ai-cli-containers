@@ -13,10 +13,10 @@ services:
       context: .
       dockerfile: common.Dockerfile
       args: &build_args
-        CURRENT_HOME: ${CURRENT_HOME}
-        CURRENT_USERNAME: ${CURRENT_USERNAME}
-        CURRENT_UID: ${CURRENT_UID}
-        CURRENT_GID: ${CURRENT_GID}
+        CURRENT_HOME: ${CURRENT_HOME:-}
+        CURRENT_USERNAME: ${CURRENT_USERNAME:-}
+        CURRENT_UID: ${CURRENT_UID:-}
+        CURRENT_GID: ${CURRENT_GID:-}
         # override for each cli
         INSTALL_COMMAND: curl -fsSL https://claude.ai/install.sh | bash
     profiles: ["cli"] # prevents auto-start with docker compose up
