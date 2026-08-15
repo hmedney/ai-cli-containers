@@ -16,13 +16,18 @@ if [ "${PWD}" = "${CURRENT_HOME}" ]; then
 fi
 
 function with_env() {
+  # provide service name and host env vars for ezch docker compose invocation
   COMPOSE_SERVICE="${COMPOSE_SERVICE}" CURRENT_USERNAME="${CURRENT_USERNAME}" CURRENT_UID="${CURRENT_UID}" CURRENT_GID="${CURRENT_GID}" CURRENT_HOME="${CURRENT_HOME}" "$@"
 }
 
-# setup local dir
-HOST_TOOL_HOME="${HOME}/cli-tools/${COMPOSE_SERVICE}"
-CONTAINER_TOOL_HOME="${HOME}/cli-tool"
+# host dir for this tool's home dir.
+# $HOST_TOOL_HOME is mounted as the tool's home dir inside the container.
+HOST_TOOLS_HOME="${HOME}/cli-tools"
+HOST_TOOL_HOME="${HOST_TOOLS_HOME}/${COMPOSE_SERVICE}"
 mkdir -p "${HOST_TOOL_HOME}"
+
+# path in container that will be set to HOME (cli tools will write their local files here). this is mounted as $HOST_TOOL_HOME
+CONTAINER_TOOL_HOME="${HOME}/cli-tool"
 
 case "$1" in
   :build)
@@ -36,6 +41,7 @@ case "$1" in
     exit 0
     ;;
   :upgrade)
+    # perform an upgrade by re-running just the cli tool install layer
     echo "Upgrading ${COMPOSE_SERVICE}..."
     with_env docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --build-arg UPGRADE_CACHE_BUST=$(date +%s)
     exit 0
