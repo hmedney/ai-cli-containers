@@ -83,6 +83,7 @@ if [ -f "${HOME}/.gitconfig" ]; then
 fi
 
 with_env docker compose --file "${COMPOSE_FILE}" run --rm -it \
+  --service-ports \
   --user "${CURRENT_UID}:${CURRENT_GID}" \
   --volume "${PWD}:${PWD}" \
   --volume "${HOST_TOOL_HOME}:${CONTAINER_TOOL_HOME}" \

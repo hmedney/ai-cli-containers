@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     fd-find \
     ripgrep \
+    socat \
     libgomp1 \
     locales \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \

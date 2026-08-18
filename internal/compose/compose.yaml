@@ -100,9 +100,9 @@ services:
       args:
         <<: *build_args
         INSTALL_COMMAND: |
-          # echo "allow-scripts=@deepseek-ai/dsh" >> .npmrc
+          npm install configurable-http-proxy
           npm install @deepseek-ai/dsh
-
+          npm install-scripts approve --all
     entrypoint: npx dsh web
     ports:
       - 3080:3080
