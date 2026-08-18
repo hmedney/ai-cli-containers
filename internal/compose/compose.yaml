@@ -93,6 +93,20 @@ services:
         INSTALL_COMMAND: curl -LsSf https://aider.chat/install.sh | sh
     entrypoint: aider
 
+  dsh:
+    <<: *cli_tool
+    build:
+      <<: *build
+      args:
+        <<: *build_args
+        INSTALL_COMMAND: |
+          # echo "allow-scripts=@deepseek-ai/dsh" >> .npmrc
+          npm install @deepseek-ai/dsh
+
+    entrypoint: npx dsh web
+    ports:
+      - 3080:3080
+
   goose:
     <<: *cli_tool
     build:
