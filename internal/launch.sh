@@ -35,6 +35,11 @@ case "$1" in
     with_env docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE}
     exit 0
     ;;
+  :build-verbose)
+    echo "Building ${COMPOSE_SERVICE}..."
+    with_env docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --progress plain
+    exit 0
+    ;;
   :rebuild)
     echo "Rebuilding ${COMPOSE_SERVICE}..."
     with_env docker compose --file "${COMPOSE_FILE}" build ${COMPOSE_SERVICE} --no-cache
@@ -56,7 +61,7 @@ case "$1" in
     exit 0
     ;;
   :help)
-    echo "Meta commands: :build, :rebuild, :upgrade, :shell :watch"
+    echo "Meta commands: :build, :build-verbose, :rebuild, :upgrade, :shell :watch"
     exit 0
     ;;
   *)
@@ -85,3 +90,5 @@ with_env docker compose --file "${COMPOSE_FILE}" run --rm -it \
   "${GIT_MOUNT[@]}" \
   "${COMPOSE_SERVICE}" \
   "$@"
+
+docker compose stop gateway
