@@ -48,7 +48,7 @@ RUN $PYTHON_VENV/bin/pip install --no-cache-dir --upgrade pip && \
 
 # install uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH=$HOME/.local/bin/env:$PATH
+ENV PATH=$HOME/.local/bin:$PATH
 
 # Install NodeJs
 ENV NVM_SYMLINK_CURRENT=true
@@ -61,7 +61,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install
   && npm install npm@latest -g \
   && npm config set allow-remote all \
   && npm config set allow-scripts all --location=user
-  ENV PATH=$HOME/.nvm/current/bin:$HOME/.local/bin:$HOME/bin:$PATH
+ENV PATH=$HOME/.nvm/current/bin:$HOME/bin:$PATH
 
 # default editor
 ENV EDITOR=micro
