@@ -55,13 +55,34 @@ case "$1" in
     echo "Entering shell..."
     with_env docker compose --file "${COMPOSE_FILE}" run --rm --entrypoint /bin/bash ${COMPOSE_SERVICE}
     ;;
+  :exec)
+    echo "Entering exec into ${COMPOSE_SERVICE}..."
+    IDS=$(docker ps --filter "label=com.docker.compose.service=${COMPOSE_SERVICE}" --filter "status=running" --quiet)
+    COUNT=$(printf '%s\n' "${IDS}" | grep -c .)
+    case "${COUNT}" in
+      1)
+        FIRST_ID=$(printf '%s\n' "${IDS}" | head -n1)
+        docker exec -it "${FIRST_ID}" /bin/bash
+        ;;
+      0)
+        echo "${COMPOSE_SERVICE} is not currently running."
+        echo "Launch it first, or use ':shell' to start a fresh container."
+        ;;
+      *)
+        echo "${COUNT} instances of ${COMPOSE_SERVICE} are running; can't pick one:"
+        printf '%s\n' "${IDS}"
+        echo "Stop the extras and try again."
+        ;;
+    esac
+    exit 0
+    ;;
   :watch)
     echo "Tailing http proxy requests..."
     with_env docker compose --file "${COMPOSE_FILE}" exec gateway lnav /var/log/squid/access.log
     exit 0
     ;;
   :help)
-    echo "Meta commands: :build, :build-verbose, :rebuild, :upgrade, :shell :watch"
+    echo "Meta commands: :build, :build-verbose, :rebuild, :upgrade, :shell, :exec, :watch"
     exit 0
     ;;
   *)
