@@ -16,6 +16,7 @@ RUN groupadd --gid $CURRENT_GID $CURRENT_USERNAME \
 # Install packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
+    openssh-server \
     ca-certificates \
     curl \
     file \
