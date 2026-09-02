@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     openssh-server \
     ca-certificates \
+    libatomic1 \
     curl \
     file \
     micro \
@@ -46,6 +47,7 @@ RUN python3 -m venv $PYTHON_VENV
 ENV PATH=$PYTHON_VENV/bin:$PATH
 RUN $PYTHON_VENV/bin/pip install --no-cache-dir --upgrade pip && \
     $PYTHON_VENV/bin/pip install --no-cache-dir ipykernel jupyter_client
+ENV SHELL=bash
 
 # install uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -63,6 +65,9 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install
   && npm config set allow-remote all \
   && npm config set allow-scripts all --location=user
 ENV PATH=$HOME/.nvm/current/bin:$HOME/bin:$PATH
+
+# install pnpm
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh
 
 # default editor
 ENV EDITOR=micro
