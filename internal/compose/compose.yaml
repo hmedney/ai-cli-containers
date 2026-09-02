@@ -103,7 +103,7 @@ services:
           npm install configurable-http-proxy
           npm install @deepseek-ai/dsh
           npm install-scripts approve --all
-    entrypoint: npx dsh web
+    entrypoint: npx dsh
     ports:
       - 3080:3080
 
