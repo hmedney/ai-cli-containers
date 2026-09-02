@@ -68,6 +68,7 @@ ENV PATH=$HOME/.nvm/current/bin:$HOME/bin:$PATH
 
 # install pnpm
 RUN curl -fsSL https://get.pnpm.io/install.sh | sh
+ENV PATH=$HOME/.local/share/pnpm/bin:$PATH
 
 # default editor
 ENV EDITOR=micro
