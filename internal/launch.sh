@@ -113,4 +113,4 @@ with_env docker compose --file "${COMPOSE_FILE}" run --rm -it \
   "${COMPOSE_SERVICE}" \
   "$@"
 
-docker compose stop gateway
+docker compose --file "${COMPOSE_FILE}" stop gateway
